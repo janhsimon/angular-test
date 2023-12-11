@@ -20,10 +20,7 @@ export class DBService {
   }
 
   getGameById(id: number): Game | undefined {
-    let g = this.allGames.find(game => game.id === id);
-    console.log("Searching for game with id = " + id + " in " + this.allGames.length + " many games gave us: " + g);
-    console.log(this.allGames);
-    return g;
+    return this.allGames.find(game => game.id === id);
   }
 
   filter(text: string) {
