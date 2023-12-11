@@ -1,18 +1,32 @@
+import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
 
 import { Game } from './game';
 
-import db from '../db.json';
+const baseURL: string = "https://jev8vvv1j7.execute-api.eu-west-1.amazonaws.com/test/games";
 
 @Injectable({
   providedIn: 'root'
 })
 export class DBService {
-  allGames: Game[] = db.games;
-
+  allGames!: Game[];
   filteredGamesUpdated = new EventEmitter<Game[]>();
 
-  filter(text: string){
+  constructor(private httpClient: HttpClient) {
+    this.httpClient.get<any>(baseURL).subscribe((response) => {
+      this.allGames = response as Game[];
+      this.filteredGamesUpdated.emit(this.allGames);
+    });
+  }
+
+  getGameById(id: number): Game | undefined {
+    let g = this.allGames.find(game => game.id === id);
+    console.log("Searching for game with id = " + id + " in " + this.allGames.length + " many games gave us: " + g);
+    console.log(this.allGames);
+    return g;
+  }
+
+  filter(text: string) {
     if (!text) {
       this.filteredGamesUpdated.emit(this.allGames);
       return;
@@ -21,6 +35,34 @@ export class DBService {
     const filteredGames = this.allGames.filter(
       game => game?.title.toLowerCase().includes(text.toLowerCase())
     );
+    this.filteredGamesUpdated.emit(filteredGames);
+  }
+
+  filterGenre(tags: string[]) {
+    if (tags.length == 0) {
+      this.filteredGamesUpdated.emit(this.allGames);
+      return;
+    }
+
+    const filteredGames = this.allGames.filter(game => tags.includes(game?.genre));
+    this.filteredGamesUpdated.emit(filteredGames);
+  }
+
+  filterPlatform(tags: string[]) {
+    if (tags.length == 0) {
+      this.filteredGamesUpdated.emit(this.allGames);
+      return;
+    }
+
+    const filteredGames = this.allGames.filter(game => {
+      for (let platform of game?.platforms) {
+        if (tags.includes(platform)) {
+          return true;
+        }
+      }
+      return false;
+    });
+
     this.filteredGamesUpdated.emit(filteredGames);
   }
 }

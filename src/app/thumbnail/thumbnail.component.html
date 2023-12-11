@@ -1,9 +1,13 @@
-<div id="root" (mouseenter)="enter()" (mouseleave)="leave()">
+<div id="root" routerLink="" [queryParams]="{game: game.id}" (mouseenter)="enter()" (mouseleave)="leave()">
   <div id="img-container">
-      <img src="../../assets/{{game.imglink}}" alt="thumbnail" #img />
+    <img src="../../assets/{{game.imglink}}" alt="thumbnail" #img />
   </div>
   <div id="text">
     <div id="title">{{game.title}}</div>
-    <div>Item #{{game.id}}</div>
+    <div>Genre: {{game.genre}}</div>
+    <div>
+      <span>Platforms: </span>
+      <span *ngFor="let platform of game.platforms">{{platform}} </span>
+    </div>
   </div>
 </div>

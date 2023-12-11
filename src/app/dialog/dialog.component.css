@@ -1,0 +1,11 @@
+dialog {
+  border-radius: 10px;
+  border: 0px;
+  width: 50%;
+  height: 50%;
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+}

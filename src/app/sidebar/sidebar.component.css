@@ -1,0 +1,22 @@
+fieldset {
+    margin-top: 10px;
+    padding-top: 5px;
+    padding-bottom: 20px;
+}
+
+fieldset>div {
+    padding: 2px;
+}
+
+fieldset {
+    border: none;
+}
+
+legend {
+    font-size: large;
+    font-weight: bold;
+}
+
+label {
+    user-select: none;
+}
