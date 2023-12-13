@@ -12,6 +12,10 @@ export class DBService {
   allGames!: Game[];
   filteredGamesUpdated = new EventEmitter<Game[]>();
 
+  nameFilter: string | undefined = undefined;
+  genres: string[] | undefined = undefined;
+  platforms: string[] | undefined = undefined;
+
   constructor(private httpClient: HttpClient) {
     this.httpClient.get<any>(baseURL).subscribe((response) => {
       this.allGames = response as Game[];
@@ -23,43 +27,40 @@ export class DBService {
     return this.allGames.find(game => game.id === id);
   }
 
-  filter(text: string) {
-    if (!text) {
-      this.filteredGamesUpdated.emit(this.allGames);
-      return;
-    }
-
-    const filteredGames = this.allGames.filter(
-      game => game?.title.toLowerCase().includes(text.toLowerCase())
-    );
-    this.filteredGamesUpdated.emit(filteredGames);
+  filterByName(name: string) {
+    this.nameFilter = name.toLowerCase();
+    this.updateFilter();
   }
 
-  filterGenre(tags: string[]) {
-    if (tags.length == 0) {
-      this.filteredGamesUpdated.emit(this.allGames);
-      return;
-    }
-
-    const filteredGames = this.allGames.filter(game => tags.includes(game?.genre));
-    this.filteredGamesUpdated.emit(filteredGames);
+  filterByGenre(genres: string[]) {
+    this.genres = genres;
+    this.updateFilter();
   }
 
-  filterPlatform(tags: string[]) {
-    if (tags.length == 0) {
-      this.filteredGamesUpdated.emit(this.allGames);
-      return;
-    }
+  filterByPlatform(platforms: string[]) {
+    this.platforms = platforms;
+    this.updateFilter();
+  }
 
-    const filteredGames = this.allGames.filter(game => {
-      for (let platform of game?.platforms) {
-        if (tags.includes(platform)) {
-          return true;
-        }
-      }
-      return false;
-    });
+  isGameInFilter(game: Game): boolean {
+    const name = !this.nameFilter || game.title.toLowerCase().includes(this.nameFilter);
+    const genre = !this.genres || this.genres?.length == 0 || this.genres?.includes(game.genre);
 
+    let platforms = !this.platforms || this.platforms?.length == 0;
+     if (!platforms) {
+       for (let platform of game.platforms) {
+         if (this.platforms?.includes(platform)) {
+           platforms = true;
+           break;
+         }
+       }
+     }
+
+    return name && genre && platforms;
+  }
+
+  updateFilter() {
+    let filteredGames = this.allGames.filter(game => this.isGameInFilter(game));
     this.filteredGamesUpdated.emit(filteredGames);
   }
 }

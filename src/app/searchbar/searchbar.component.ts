@@ -12,7 +12,7 @@ import { DBService } from '../db.service';
 export class SearchbarComponent {
   db: DBService = inject(DBService);
 
-  filter(text: string) {
-    this.db.filter(text);
+  filterByName(name: string) {
+    this.db.filterByName(name);
   }
 }

@@ -15,27 +15,27 @@ export class SidebarComponent {
   @ViewChildren('genre') genreCheckboxes!: ElementRef[];
   @ViewChildren('platform') platformCheckboxes!: ElementRef[];
 
-  updateGenre() {
-    let tags: string[] = [];
+  filterByGenre() {
+    let genres: string[] = [];
 
     for (let checkbox of this.genreCheckboxes) {
       if (checkbox.nativeElement.checked) {
-        tags.push(checkbox.nativeElement.id);
+        genres.push(checkbox.nativeElement.id);
       }
     }
 
-    this.db.filterGenre(tags);
+    this.db.filterByGenre(genres);
   }
 
-  updatePlatform() {
-    let tags: string[] = [];
+  filterByPlatform() {
+    let platforms: string[] = [];
 
     for (let checkbox of this.platformCheckboxes) {
       if (checkbox.nativeElement.checked) {
-        tags.push(checkbox.nativeElement.id);
+        platforms.push(checkbox.nativeElement.id);
       }
     }
 
-    this.db.filterPlatform(tags);
+    this.db.filterByPlatform(platforms);
   }
 }
